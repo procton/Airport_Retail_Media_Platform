@@ -1,0 +1,55 @@
+[project]
+name = "airp-backend"
+version = "0.1.0"
+description = "Airport Retail Media Platform backend (FastAPI + SQLAlchemy + SQLite)"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.118,<1",
+    "uvicorn>=0.37,<1",
+    "pydantic>=2.11,<3",
+    "pydantic-settings>=2.10,<3",
+    "sqlalchemy[asyncio]>=2.0.40,<3",
+    "alembic>=1.16,<2",
+    "aiosqlite>=0.21,<1",
+    "python-multipart>=0.0.20",
+    "qrcode[png]>=8.2,<9",
+    "lxml>=5.3",
+    "orjson>=3.10,<4",
+    "websockets>=15,<16",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.26",
+    "httpx>=0.28",
+    "ruff>=0.12",
+    "mypy>=1.16",
+    "freezegun>=1.5",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+asyncio_mode = "auto"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+check_untyped_defs = true
+
+[build-system]
+requires = ["uv_build>=0.8.4,<0.9.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "app"
+module-root = "backend"

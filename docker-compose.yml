@@ -1,0 +1,27 @@
+# One-command local run (AGENTS §20): docker compose up --build
+services:
+  airp:
+    build: .
+    image: airp-meridian:latest
+    ports:
+      - "8000:8000"              # dashboards + SPA + claim links
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:////data/airp.db
+      - AIRP_DATA_DIR=/data
+      # phone-reachable claim base (LAN IP or public URL, no trailing slash).
+      # Empty => backend falls back to the request Host header, which works on
+      # LAN with browser + phone on the same network.
+      - AIRP_CLAIM_BASE_URL=${AIRP_CLAIM_BASE_URL:-}
+      - SEED_MODE=${SEED_MODE:-full}
+    volumes:
+      - airp-data:/data          # SQLite persists across restarts
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=5)"]
+      interval: 20s
+      timeout: 8s
+      retries: 10
+      start_period: 40s
+
+volumes:
+  airp-data:
